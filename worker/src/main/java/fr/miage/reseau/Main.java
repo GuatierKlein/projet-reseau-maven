@@ -2,6 +2,9 @@ package fr.miage.reseau;
 
 public class Main {
     public static void main(String[] args) throws Exception {
+        testMiner();
+    }
+    public static void testMiner() throws Exception {
         String data = "uoazc55psst58zahut22rq19rjg0861og4fjnw6ldiqr7ncmxkq5";
         Miner miner = new Miner(data, 1, 1, 0);
         long startTime = System.nanoTime();
