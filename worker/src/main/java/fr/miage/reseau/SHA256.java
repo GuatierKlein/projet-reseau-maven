@@ -5,6 +5,14 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class SHA256 {
+    public static String getStringHash(String input) {
+        return encodeHex(getDigest(input));
+    }  
+
+    public static boolean hashHasAtLeastXStartingZeroes(String input, int x) {
+        return countStartingZeroesInHash(getDigest(input)) >= x;
+    }
+
     private static String encodeHex(byte[] digest) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < digest.length; i++) {
@@ -13,16 +21,33 @@ public class SHA256 {
         return sb.toString();
     }
 
-    public static String getStringHash(String input) {
+    private static byte[] getDigest(String input) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] buffer = input.getBytes("UTF-8");
             md.update(buffer);
             byte[] digest = md.digest();
-            return encodeHex(digest);
+            return digest;
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             e.printStackTrace();
-            return e.getMessage();
+            return new byte[0];
         }
-    }  
+    }
+
+    private static int countStartingZeroesInHash(byte[] hash) {
+        int res = 0;
+        for (int i = 0; i < hash.length; i++) {
+            int zeroCountInCurrentByte = countStartingZeroesInByte(hash[i]);
+            if(zeroCountInCurrentByte == 0) break;
+            res += zeroCountInCurrentByte;
+        }
+
+        return res;
+    }
+
+    private static int countStartingZeroesInByte(byte value) {
+        if((value & 0xff) == 0x0) return 2;
+        if((value & 0xff) <= 0x0f) return 1;
+        return 0;
+    }
 }

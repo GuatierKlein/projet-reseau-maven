@@ -9,7 +9,7 @@ public class Miner {
     public Miner(String data, int difficulty, int step, int startingNounce) {
         setData(data);
         setDifficulty(difficulty);
-        _nonce = new Nonce(1, 0);
+        _nonce = new Nonce(step, startingNounce);
         iterations = 0;
     }
 
@@ -26,26 +26,24 @@ public class Miner {
     }
 
     public void computeNonce() {
-        String preFix = getPrefix(_difficulty);
-        while (!SHA256.getStringHash(_data + _nonce).startsWith(preFix)) {
+        while (!SHA256.hashHasAtLeastXStartingZeroes(concatDataAndNounce(), _difficulty)) {
             _nonce.Next();
             iterations++;
         }
     }
 
     public String getHash() {
-        return SHA256.getStringHash(_data + _nonce);
+        return SHA256.getStringHash(concatDataAndNounce());
     }
 
     public int getIterations() {
         return iterations;
     }
 
-    private String getPrefix(int size) {
-        StringBuilder preFix = new StringBuilder();
-        for (int i = 0; i < size; i++) {
-            preFix.append("0");
-        }
-        return preFix.toString();
+    private String concatDataAndNounce() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(_data);
+        sb.append(_nonce);
+        return sb.toString();
     }
 }
