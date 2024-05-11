@@ -12,7 +12,6 @@ public class Main {
         long endTime = System.nanoTime();
         long duration = endTime - startTime;
         double milliseconds = duration / 1e6;
-        var test = miner.getNonce().getBytes();
         System.out.println("FOUND!");
         System.out.print("Data : ");
         System.out.println(data);

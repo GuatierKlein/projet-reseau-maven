@@ -45,6 +45,7 @@ public class Miner {
         }
     }
 
+    @SuppressWarnings("unused")
     private void log() {
         System.out.print("Résultat : ");
         System.out.println(getHash());
