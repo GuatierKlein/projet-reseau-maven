@@ -23,8 +23,8 @@ public class Client{
     
     public static void main(String[] args) {
 
-        final String SERVER_ADDRESS = "localhost";
-        final int PORT = 1337;
+        String userInput;
+        boolean isMining = false;
 
         // Connexion au serveur
         try (Socket socket = new Socket(SERVER_ADDRESS, PORT);
@@ -32,28 +32,57 @@ public class Client{
              BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
             String serverMessage;
-            boolean sendSolution = false;
             Scanner scanner = new Scanner(System.in);
 
-            while ((serverMessage = reader.readLine()) != null ) {
-                System.out.println("Instruction reçue du serveur : " + serverMessage); // Afficher l'instruction dans le terminal
+            while ((serverMessage = reader.readLine()) != null) {
+                System.out.println(serverMessage);
+
                 if (serverMessage.equals("WHO_ARE_YOU_?")) {
-                    writer.println(scanner.nextLine());
-                }
-                if (serverMessage.equals("GIMME_PASSWORD")){
-                    writer.println(scanner.nextLine());
-                }
-                if (serverMessage.equals("HELLO_YOU") || serverMessage.equals("SOLVED") || serverMessage.equals("CANCELLED")){
-                    writer.println(scanner.nextLine());
-                }
-                if (serverMessage.equals("PROGRESS")){
-                	sendSolution = true;
-                    writer.println(scanner.nextLine()); 
-                
-                }
-                if (sendSolution) {
-                    writer.println(scanner.nextLine());
-                    sendSolution = false; // Réinitialisation du booléen
+                    // Attendre la réponse appropriée 
+                    while (true) {
+                        userInput = scanner.nextLine();
+                        if (userInput.trim().equals(respondToWhoAreYou())) {
+                            writer.println(respondToWhoAreYou());
+                            break;
+                        }
+                    }
+                } else if (serverMessage.equals("GIMME_PASSWORD")) {
+                    // Attendre un mdp valide au bon format
+                    while (true) {
+                        userInput = scanner.nextLine();
+                        if (userInput.matches("^PASSWD .+$")) {
+                            writer.println(userInput);
+                            break;
+                        }
+                    }
+                } else if (serverMessage.equals("HELLO_YOU") || serverMessage.equals("SOLVED") || serverMessage.equals("CANCELLED")) {
+                    // Attendre la réponse appropriée
+                    while (true) {
+                        userInput = scanner.nextLine();
+                        if (userInput.trim().equals(indicateReady())) {
+                            writer.println(indicateReady());
+                            break;
+                        }
+                    }
+                } else if (serverMessage.equals("PROGRESS")) {
+                    // Attendre la réponse appropriée
+                    while (true) {
+                        userInput = scanner.nextLine();
+                        if (userInput.equals(indicateWorkerStatus(isMining))) {
+                            writer.println(indicateWorkerStatus(isMining));
+                            break;
+                        }
+                    }
+                    
+                    // Attendre l'envoi du hash trouvé au bon format
+                    while (isMining) {
+                        userInput = scanner.nextLine();
+                        if (userInput.matches("^FOUND \\w+ \\d+$")) {
+                            writer.println(userInput);
+                            break;
+                        }
+                    }
+                    
                 }
             }
 
@@ -129,14 +158,17 @@ public class Client{
 	}
 	
 	// Méthode pour indiquer au serveur que le worker est prêt
-	public static String indicateWorkerStatus(boolean isMining, String actualNonce) {
-	return isMining ? "TESING" + " " +actualNonce : "NOPE";
+	public static String indicateWorkerStatus(boolean isMining) {
+	return isMining ? "TESING" + " " +getActualNonce() : "NOPE";
 	}
+
+    // Méthode pour envoyer au serveur le nonce actuel
+	public static int getActualNonce() {
+        return 1;
+        }
 	
 	// Méthode pour indiquer au serveur qu'une solution a été trouvée
 	public static String provideSolution(String hash, String nonce) {
-	return "FOUND " + hash + " " + nonce;
+		return "FOUND " + hash + " " + nonce;
 	}
-
-    
 }

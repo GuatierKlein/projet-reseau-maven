@@ -9,6 +9,7 @@ public class ClientTest {
 
     private static final int PORT = 1337;
 
+    
     public static void main(String[] args) {
 
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
@@ -54,6 +55,11 @@ public class ClientTest {
                 while ((workerStatus = reader.readLine()) != null) {
                     System.out.println("Message reçu du client : " + workerStatus);
                 }
+                
+                String foundSolution;
+                while ((foundSolution = reader.readLine()) != null) {
+                    System.out.println("Message reçu du client : " + foundSolution);
+                }
 
                 // Fermer le socket du client
                 clientSocket.close();
@@ -64,3 +70,4 @@ public class ClientTest {
         }
     }
 }
+
