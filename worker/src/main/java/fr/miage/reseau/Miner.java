@@ -38,10 +38,14 @@ public class Miner {
     }
 
     public void computeNonce() {
-        while (!SHA256.hashHasAtLeastXStartingZeroes(concatDataAndNounceBytes(), _difficulty)) {
-            _nonce.Next();
-            iterations++;
-            // log();
+        try {
+            while (!SHA256.hashHasAtLeastXStartingZeroes(concatDataAndNounceBytes(), _difficulty)) {
+                _nonce.Next();
+                iterations++;
+                // log();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

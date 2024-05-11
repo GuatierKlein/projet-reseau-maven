@@ -5,15 +5,16 @@ import java.nio.ByteBuffer;
 
 public class Nonce {
     private long _value;
-    private int _clientIndex;
+    private int _step;
 
     public Nonce(int step, int initValue) {
-        _clientIndex = step;
+        _step = step;
         _value = initValue;
     }
 
-    public void Next() {
-        _value += _clientIndex;
+    public void Next() throws Exception {
+        if(_value > Long.MAX_VALUE - _step) throw new Exception("Nonce maximum atteint");
+        _value += _step;
     }
 
     public String toHexString() {
