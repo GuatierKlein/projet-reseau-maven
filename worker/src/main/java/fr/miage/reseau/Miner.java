@@ -41,18 +41,23 @@ public class Miner {
         while (!SHA256.hashHasAtLeastXStartingZeroes(concatDataAndNounceBytes(), _difficulty)) {
             _nonce.Next();
             iterations++;
-            // System.out.print("Résultat : ");
-            // System.out.println(getHash());
-            // System.out.print("Nonce Hex : ");
-            // System.out.println(getNonceHexString());
-            // System.out.print("Nonce String : ");
-            // System.out.println(getNonce());
-            // System.out.print("Itérations : ");
-            // System.err.println(getIterations());
-            // System.out.print("Data + nonce :");
-            // System.out.println(concatDataAndNounceString());
-            // System.out.println(SHA256.hashHasAtLeastXStartingZeroes(concatDataAndNounceString(), _difficulty));
+            // log();
         }
+    }
+
+    private void log() {
+        System.out.print("Résultat : ");
+        System.out.println(getHash());
+        System.out.print("Nonce Hex : ");
+        System.out.println(getNonceHexString());
+        System.out.print("Nonce String : ");
+        System.out.println(getNonce());
+        System.out.print("Itérations : ");
+        System.err.println(getIterations());
+        System.out.print("Data + nonce :");
+        System.out.println(concatDataAndNounceString());
+        System.out.print("Valide :");
+        System.out.println(SHA256.hashHasAtLeastXStartingZeroes(concatDataAndNounceString(), _difficulty));
     }
 
     public String getHash() {
