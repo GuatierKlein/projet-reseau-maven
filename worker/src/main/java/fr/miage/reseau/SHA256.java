@@ -13,6 +13,10 @@ public class SHA256 {
         return countStartingZeroesInHash(getDigest(input)) >= x;
     }
 
+    public static boolean hashHasAtLeastXStartingZeroes(byte[] input, int x) {
+        return countStartingZeroesInHash(getDigest(input)) >= x;
+    }
+
     private static String encodeHex(byte[] digest) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < digest.length; i++) {
@@ -29,6 +33,18 @@ public class SHA256 {
             byte[] digest = md.digest();
             return digest;
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return new byte[0];
+        }
+    }
+
+    private static byte[] getDigest(byte[] input) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(input);
+            byte[] digest = md.digest();
+            return digest;
+        } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
             return new byte[0];
         }
