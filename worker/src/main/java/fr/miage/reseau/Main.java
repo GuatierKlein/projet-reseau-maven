@@ -12,11 +12,14 @@ public class Main {
         long endTime = System.nanoTime();
         long duration = endTime - startTime;
         double milliseconds = duration / 1e6;
+        System.out.println("FOUND!");
         System.out.print("Data : ");
         System.out.println(data);
         System.out.print("Résultat : ");
         System.out.println(miner.getHash());
-        System.out.print("Nonce : ");
+        System.out.print("Nonce Hex : ");
+        System.out.println(miner.getNonceHexString());
+        System.out.print("Nonce String : ");
         System.out.println(miner.getNonce());
         System.out.print("Itérations : ");
         System.err.println(miner.getIterations());

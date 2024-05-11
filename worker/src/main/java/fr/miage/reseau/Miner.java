@@ -1,7 +1,10 @@
 package fr.miage.reseau;
 
+import java.io.UnsupportedEncodingException;
+
 public class Miner {
     private String _data;
+    private byte[] _dataBytes;
     private int _difficulty;
     private Nonce _nonce;
     private int iterations;
@@ -15,6 +18,11 @@ public class Miner {
 
     public void setData(String data) {
         _data = data;
+        try {
+            _dataBytes = data.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setDifficulty(int difficulty) {
@@ -25,22 +33,59 @@ public class Miner {
         return _nonce.toString();
     }
 
+    public String getNonceHexString() {
+        return _nonce.toHexString();
+    }
+
     public void computeNonce() {
-        while (!SHA256.hashHasAtLeastXStartingZeroes(concatDataAndNounce(), _difficulty)) {
-            _nonce.Next();
-            iterations++;
+        try {
+            while (!SHA256.hashHasAtLeastXStartingZeroes(concatDataAndNounceBytes(), _difficulty)) {
+                _nonce.Next();
+                iterations++;
+                // log();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
+    @SuppressWarnings("unused")
+    private void log() {
+        System.out.print("Résultat : ");
+        System.out.println(getHash());
+        System.out.print("Nonce Hex : ");
+        System.out.println(getNonceHexString());
+        System.out.print("Nonce String : ");
+        System.out.println(getNonce());
+        System.out.print("Itérations : ");
+        System.err.println(getIterations());
+        System.out.print("Data + nonce :");
+        System.out.println(concatDataAndNounceString());
+        System.out.print("Valide :");
+        System.out.println(SHA256.hashHasAtLeastXStartingZeroes(concatDataAndNounceString(), _difficulty));
+    }
+
     public String getHash() {
-        return SHA256.getStringHash(concatDataAndNounce());
+        return SHA256.getStringHash(concatDataAndNounceString());
     }
 
     public int getIterations() {
         return iterations;
     }
 
-    private String concatDataAndNounce() {
+    private byte[] concatDataAndNounceBytes() {
+        byte[] nonce = _nonce.getBytes();
+        int newLength = _dataBytes.length + nonce.length;
+
+        byte[] res = new byte[newLength];
+
+        System.arraycopy(_dataBytes, 0, res, 0, _dataBytes.length);
+        System.arraycopy(nonce, 0, res, _dataBytes.length, nonce.length);
+
+        return res;
+    }
+
+    private String concatDataAndNounceString() {
         StringBuilder sb = new StringBuilder();
         sb.append(_data);
         sb.append(_nonce);
