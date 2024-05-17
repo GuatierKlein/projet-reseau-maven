@@ -5,9 +5,14 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
 public class Worker {
+    private String password;
+    private Thread workerThread;
+
     public void launch(String[] args) {
+        askForPwd();
         try {
             final InetAddress bindAddress = InetAddress.getByName("0.0.0.0");
             ServerSocket socket = new ServerSocket(1337);
@@ -19,13 +24,24 @@ public class Worker {
 
                 StringBuffer sb = new StringBuffer();
                 sb.append(in);
-                String[] splitIn = sb.toString().split(" ");
 
-                
+                Message message = new Message(sb.toString());
+
+                for (MessageLine line : message.getLines()) {
+                    ProtocolInterpreter interpeter = new ProtocolInterpreter(line);
+                    interpeter.execute();
+                }
                 
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void askForPwd() {
+        System.out.print("Mot de passe à envoyer au serveur : ");
+        Scanner input = new Scanner(System.in);
+        password = input.nextLine();
+        input.close();
     }
 }

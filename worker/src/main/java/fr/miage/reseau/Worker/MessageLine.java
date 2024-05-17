@@ -1,11 +1,11 @@
 package fr.miage.reseau.Worker;
 
-public class Protocol {
+public class MessageLine {
     private String command;
     private String arg1;
     private String arg2;
 
-    public Protocol(String message) {
+    public MessageLine(String message) {
         String[] splitMessage = message.split(" ");
 
         if(splitMessage.length < 1 || splitMessage.length > 2)
