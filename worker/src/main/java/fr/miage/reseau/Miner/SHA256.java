@@ -54,8 +54,9 @@ public class SHA256 {
         int res = 0;
         for (int i = 0; i < hash.length; i++) {
             int zeroCountInCurrentByte = countStartingZeroesInByte(hash[i]);
-            if(zeroCountInCurrentByte < 2) break;
             res += zeroCountInCurrentByte;
+            if(zeroCountInCurrentByte < 2) 
+                return res;
         }
 
         return res;
