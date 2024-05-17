@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class Worker {
     private String password;
-    private Thread workerThread;
+    private ProtocolInterpreter interpeter;
 
     public void launch(String[] args) {
         askForPwd();
@@ -28,9 +28,9 @@ public class Worker {
                 Message message = new Message(sb.toString());
 
                 for (MessageLine line : message.getLines()) {
-                    ProtocolInterpreter interpeter = new ProtocolInterpreter(line);
+                    // ProtocolInterpreter interpeter = new ProtocolInterpreter(line);
                     //make interpreter static to store the worker thread
-                    interpeter.execute();
+                    interpeter.execute(line);
                 }
                 
             }

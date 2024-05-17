@@ -1,18 +1,17 @@
 package fr.miage.reseau.Worker;
 
 public class ProtocolInterpreter {
-    private MessageLine message;
+    // private MessageLine message;
     private String password;
+    private Thread workerThread;
 
-    public ProtocolInterpreter(MessageLine message) {
-        this.message = message;
-    }
+    public ProtocolInterpreter() {}
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public void execute() {
+    public void execute(MessageLine message) {
         switch (message.getCommand()) {
             case "WHO_ARE_YOU_?":    
             break;
@@ -40,6 +39,10 @@ public class ProtocolInterpreter {
             default:
                 break;
         }
+    }
+
+    private void SOLVE() {
+        workerThread = new Thread();
     }
 
     private void WHO_ARE_YOU() {
