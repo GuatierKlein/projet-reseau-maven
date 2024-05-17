@@ -1,4 +1,4 @@
-package fr.miage.reseau;
+package fr.miage.reseau.Miner;
 
 public class Main {
     public static void main(String[] args) throws Exception {

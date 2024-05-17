@@ -1,4 +1,4 @@
-package fr.miage.reseau;
+package fr.miage.reseau.Miner;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
