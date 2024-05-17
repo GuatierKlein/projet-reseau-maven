@@ -2,7 +2,7 @@ package fr.miage.reseau.Miner;
 
 import java.io.UnsupportedEncodingException;
 
-public class Miner {
+public class Miner implements Runnable{
     private String _data;
     private byte[] _dataBytes;
     private int _difficulty;
@@ -90,5 +90,10 @@ public class Miner {
         sb.append(_data);
         sb.append(_nonce);
         return sb.toString();
+    }
+
+    @Override
+    public void run() {
+        computeNonce();
     }
 }

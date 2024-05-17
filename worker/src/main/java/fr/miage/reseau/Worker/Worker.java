@@ -28,8 +28,6 @@ public class Worker {
                 Message message = new Message(sb.toString());
 
                 for (MessageLine line : message.getLines()) {
-                    // ProtocolInterpreter interpeter = new ProtocolInterpreter(line);
-                    //make interpreter static to store the worker thread
                     interpeter.execute(line);
                 }
                 
