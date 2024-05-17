@@ -7,7 +7,7 @@ public class Nonce {
     private long _value;
     private int _step;
 
-    public Nonce(int step, int initValue) {
+    public Nonce(int step, long initValue) {
         _step = step;
         _value = initValue;
     }

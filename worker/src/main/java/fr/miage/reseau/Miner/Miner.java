@@ -9,7 +9,7 @@ public class Miner implements Runnable{
     private Nonce _nonce;
     private int iterations;
 
-    public Miner(String data, int difficulty, int step, int startingNounce) {
+    public Miner(String data, int difficulty, int step, long startingNounce) {
         setData(data);
         setDifficulty(difficulty);
         _nonce = new Nonce(step, startingNounce);

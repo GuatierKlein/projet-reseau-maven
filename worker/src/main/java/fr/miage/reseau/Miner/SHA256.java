@@ -54,7 +54,7 @@ public class SHA256 {
         int res = 0;
         for (int i = 0; i < hash.length; i++) {
             int zeroCountInCurrentByte = countStartingZeroesInByte(hash[i]);
-            if(zeroCountInCurrentByte == 0) break;
+            if(zeroCountInCurrentByte < 2) break;
             res += zeroCountInCurrentByte;
         }
 
@@ -62,8 +62,11 @@ public class SHA256 {
     }
 
     private static int countStartingZeroesInByte(byte value) {
-        if((value & 0xff) == 0x0) return 2;
-        if((value & 0xff) <= 0x0f) return 1;
+        // var test = value & 0xff;
+        if((value & 0xff) == 0x0) 
+            return 2;
+        if((value & 0xff) <= 0x0f) 
+            return 1;
         return 0;
     }
 }
