@@ -29,6 +29,7 @@ public class Worker {
 
                 for (MessageLine line : message.getLines()) {
                     ProtocolInterpreter interpeter = new ProtocolInterpreter(line);
+                    //make interpreter static to store the worker thread
                     interpeter.execute();
                 }
                 
