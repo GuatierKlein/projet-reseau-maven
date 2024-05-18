@@ -48,7 +48,8 @@ public class Worker implements Runnable {
             });
 
             readerThread.start();
-            // clientSocket.close();
+            readerThread.join();
+            clientSocket.close();
         } catch (Exception e) {
             System.out.println("Connection echoue");
             e.printStackTrace();
