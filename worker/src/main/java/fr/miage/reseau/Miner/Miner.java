@@ -7,7 +7,7 @@ public class Miner implements Runnable{
     private byte[] _dataBytes;
     private int _difficulty;
     private Nonce _nonce;
-    private int iterations;
+    private long iterations;
 
     public Miner(String data, int difficulty, int step, long startingNounce) {
         setData(data);
@@ -69,7 +69,7 @@ public class Miner implements Runnable{
         return SHA256.getStringHash(concatDataAndNounceString());
     }
 
-    public int getIterations() {
+    public long getIterations() {
         return iterations;
     }
 
