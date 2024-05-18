@@ -48,7 +48,7 @@ public class ProtocolInterpreter {
             case "SOLVED": SOLVED();
             break;
         
-            default: throw new Exception("Commande inconnue");
+            default: throw new Exception("Commande inconnue : " + message.getCommand());
         }
     }
 
