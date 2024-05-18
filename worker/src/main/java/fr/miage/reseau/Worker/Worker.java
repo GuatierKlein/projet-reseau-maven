@@ -35,6 +35,7 @@ public class Worker implements Runnable {
             }
             clientSocket.close();
         } catch (Exception e) {
+            System.out.println("Connection echoue");
             e.printStackTrace();
         }
     }
