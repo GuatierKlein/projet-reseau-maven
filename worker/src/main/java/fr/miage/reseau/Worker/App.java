@@ -8,6 +8,6 @@ public class App {
         }
 
         System.out.println("Demarrage du client...");
-        new Worker(args[0], args[1], Integer.parseInt(args[2])).run();;
+        new Worker(args[0], args[1], Integer.parseInt(args[2])).run();
     }
 }

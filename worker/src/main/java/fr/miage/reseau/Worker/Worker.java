@@ -31,14 +31,11 @@ public class Worker implements Runnable {
                     String response;
                     while ((response = inFromServer.readLine()) != null) {
                         System.out.println("Recu du serveur : " + response);
-                        Message message = new Message(response); 
-                        for (MessageLine line : message.getLines()) {
-                            try {
-                                interpeter.execute(line);
-                            } catch (Exception e) {
-                                System.out.println(e.getMessage());
-                            }
-                        }
+                        try {
+                            interpeter.execute(new Message(response));
+                        } catch (Exception e) {
+                            System.out.println(e.getMessage());
+                        }   
                 }
                 } catch (IOException e) {
                     e.printStackTrace();

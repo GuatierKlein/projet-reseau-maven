@@ -23,7 +23,7 @@ public class ProtocolInterpreter {
         this.outToServer = new MessageSender(outToServer, password);
     }
 
-    public void execute(MessageLine message) throws Exception {
+    public void execute(Message message) throws Exception {
         switch (message.getCommand()) {
             case "WHO_ARE_YOU_?": WHO_ARE_YOU();
             break;
@@ -52,7 +52,7 @@ public class ProtocolInterpreter {
         }
     }
 
-    private void SOLVE(MessageLine message) throws Exception {
+    private void SOLVE(Message message) throws Exception {
         System.out.println("Minage demandé par le serveur");
         //vérifier le parse
         difficulty = Integer.parseInt(message.getArg1());
@@ -86,7 +86,7 @@ public class ProtocolInterpreter {
         //nada
     }
 
-    private void NONCE(MessageLine message) {
+    private void NONCE(Message message) {
         try {
             startingNonce = Integer.parseInt(message.getArg1());
             step = Integer.parseInt(message.getArg2());
@@ -96,7 +96,7 @@ public class ProtocolInterpreter {
         System.out.println("Parametres nonce recus");
     }
 
-    private void PAYLOAD(MessageLine message) {
+    private void PAYLOAD(Message message) {
         data = message.getArg1();
     }
 
