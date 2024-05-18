@@ -19,9 +19,7 @@ public class Worker implements Runnable {
 
     @Override
     public void run() {
-        // System.out.println("En Attente du serveur...");
-        try {     
-                    
+        try {                        
             Socket clientSocket = new Socket(serverAddress, port);
             final DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
             final BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
