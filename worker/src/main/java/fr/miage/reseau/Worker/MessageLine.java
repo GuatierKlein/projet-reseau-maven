@@ -12,7 +12,7 @@ public class MessageLine {
             throw new IllegalArgumentException("Message invalide");
 
         command = splitMessage[0];
-        if(splitMessage.length == 2)
+        if(splitMessage.length >= 2)
             arg1 = splitMessage[1];
 
         if(splitMessage.length == 3)

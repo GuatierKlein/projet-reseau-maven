@@ -60,8 +60,11 @@ public class ProtocolInterpreter {
             throw new Exception("Paramètres manquants");
         miner = new Miner(data, difficulty, step, startingNonce);
         workerThread = new Thread(miner);
-        workerThread.start();
-        System.out.println("Minage debute");
+        workerThread.start(); //comment on s'arrete quand on a trouvé?
+        System.out.println("Minage debute...");
+        workerThread.join();
+        System.out.println("Minage finit");
+        outToServer.FOUND(miner.getHash(), miner.getNonceHexString());
     }
 
     private void WHO_ARE_YOU() {
