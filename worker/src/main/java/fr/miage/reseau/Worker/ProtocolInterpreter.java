@@ -14,7 +14,6 @@ public class ProtocolInterpreter {
     private String data;
     private Miner miner;
     private MessageSender outToServer;
-    private boolean isSolving;
 
     public ProtocolInterpreter(String password) {
         this.password = password;
