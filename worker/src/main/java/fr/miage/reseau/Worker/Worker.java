@@ -32,9 +32,8 @@ public class Worker implements Runnable {
                 try {
                     String response;
                     while ((response = inFromServer.readLine()) != null) {
-                        System.out.println("Réponse du serveur: " + response);
-                        Message message = new Message(response);
-                        System.out.println("lala"); 
+                        System.out.println("Recu du serveur : " + response);
+                        Message message = new Message(response); 
                         for (MessageLine line : message.getLines()) {
                             try {
                                 interpeter.execute(line);
