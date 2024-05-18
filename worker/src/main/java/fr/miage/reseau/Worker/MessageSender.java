@@ -12,6 +12,7 @@ public class MessageSender {
     }
 
     private void send(String message) {
+        System.out.printf("Sending %s", message);
         try {
             outToServer.writeBytes(message);
         } catch (IOException e) {
@@ -33,6 +34,7 @@ public class MessageSender {
 
     public void sendProgress(String nonce) {
         StringBuffer sb = new StringBuffer();
+        sb.append("STATUS ");
         sb.append(nonce);
         sb.append("\n");
         send(sb.toString());
@@ -42,8 +44,12 @@ public class MessageSender {
         send("READY\n");
     }
 
-    public void IDLE() {
-        send("IDLE\n");
+    public void STATUS_IDLE() {
+        send("STATUS IDLE\n");
+    }
+
+    public void STATUS_READY() {
+        send("STATUS READY\n");
     }
 
     public void FOUND(String hash, String nonce) {

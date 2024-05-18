@@ -8,6 +8,7 @@ public class Miner implements Runnable{
     private int _difficulty;
     private Nonce _nonce;
     private long iterations;
+    private boolean isWorking;
 
     public Miner(String data, int difficulty, int step, long startingNounce) {
         setData(data);
@@ -38,6 +39,7 @@ public class Miner implements Runnable{
     }
 
     public void computeNonce() {
+        isWorking = true;
         try {
             while (!SHA256.hashHasAtLeastXStartingZeroes(concatDataAndNounceBytes(), _difficulty)) {
                 _nonce.Next();
@@ -47,6 +49,7 @@ public class Miner implements Runnable{
         } catch (Exception e) {
             e.printStackTrace();
         }
+        isWorking = false;
     }
 
     @SuppressWarnings("unused")
@@ -95,5 +98,9 @@ public class Miner implements Runnable{
     @Override
     public void run() {
         computeNonce();
+    }
+
+    public boolean isWorking() {
+        return isWorking;
     }
 }
