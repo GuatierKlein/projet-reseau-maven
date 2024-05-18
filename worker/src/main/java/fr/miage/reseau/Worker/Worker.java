@@ -1,9 +1,8 @@
 package fr.miage.reseau.Worker;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.InetAddress;
-import java.net.ServerSocket;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -13,24 +12,27 @@ public class Worker {
 
     public void launch(String[] args) {
         askForPwd();
+        interpeter = new ProtocolInterpreter(password);
         try {
-            final InetAddress bindAddress = InetAddress.getByName("0.0.0.0");
-            ServerSocket socket = new ServerSocket(1337);
+            String serverAddress = "localhost";
+            int serverPort = 1337;
+            
 
             while (true) {                
-                final Socket clientSocket = socket.accept();
-                final OutputStream out = clientSocket.getOutputStream();
-                final InputStream in = clientSocket.getInputStream();
-
-                StringBuffer sb = new StringBuffer();
-                sb.append(in);
-
-                Message message = new Message(sb.toString());
+                Socket clientSocket = new Socket(serverAddress, serverPort);
+                final DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
+                final BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                interpeter.setOutToServer(outToServer);
+                Message message = new Message(inFromServer.readLine());
 
                 for (MessageLine line : message.getLines()) {
-                    interpeter.execute(line);
+                    try {
+                        interpeter.execute(line);
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
                 }
-                
+                clientSocket.close();
             }
         } catch (Exception e) {
             e.printStackTrace();
