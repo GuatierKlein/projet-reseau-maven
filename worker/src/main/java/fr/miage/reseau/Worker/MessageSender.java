@@ -13,7 +13,7 @@ public class MessageSender {
     }
 
     private void send(String message) {
-        System.out.printf("Sending %s", message);
+        // System.out.printf("Sending %s", message);
         try {
             outToServer.writeBytes(message);
         } catch (IOException e) {

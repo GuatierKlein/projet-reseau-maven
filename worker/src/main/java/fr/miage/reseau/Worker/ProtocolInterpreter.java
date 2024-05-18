@@ -61,24 +61,27 @@ public class ProtocolInterpreter {
         miner = new Miner(data, difficulty, step, startingNonce);
         workerThread = new Thread(miner);
         workerThread.start(); //comment on s'arrete quand on a trouvé?
-        System.out.println("Minage debute...");
+        System.out.println("Minage debuté...");
         workerThread.join();
-        System.out.println("Minage finit");
+        System.out.println("FOUND! Solution trouvée");
         outToServer.FOUND(miner.getHash(), miner.getNonceHexString());
+        System.out.println("Réponse envoyée");
+        outToServer.READY();
+        System.out.println("En attente du serveur...");
     }
 
     private void WHO_ARE_YOU() {
-        System.out.println("Authentification demandee");
+        System.out.println("Connecté");
         outToServer.ITS_ME();
     }
 
     private void GIMME_PASSWORD() {
-        System.out.println("Mot de passe demande");
+        System.out.println("Mot de passe demandé");
         outToServer.PASSWD();
     }
 
     private void HELLO_YOU() {
-        System.out.println("Mot de passe valide par le serveur");
+        System.out.println("Mot de passe validé par le serveur");
         outToServer.READY();
     }
 
@@ -93,7 +96,7 @@ public class ProtocolInterpreter {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("Parametres nonce recus");
+        System.out.println("Paramètres nonce reçus");
     }
 
     private void PAYLOAD(Message message) {
@@ -101,12 +104,12 @@ public class ProtocolInterpreter {
     }
 
     private void YOU_DONT_FOOL_ME() {
-        System.out.println("Connection refusee");
+        System.out.println("Connection refusée");
         System.exit(0);
     }
 
     private void PROGRESS() {
-        System.out.println("Progres demande");
+        System.out.println("Progrès demandé");
         if(data == null || step == 0)
         {
             outToServer.STATUS_IDLE();
@@ -125,11 +128,11 @@ public class ProtocolInterpreter {
         workerThread.interrupt();
         workerThread.join();
         outToServer.READY();
-        System.out.println("Minage arrete par le serveur");
+        System.out.println("Minage arreté par le serveur");
     }
 
     private void SOLVED() throws InterruptedException {
-        System.out.println("Solution trouvee par une autre machine");
+        System.out.println("Solution trouvée par une autre machine");
         CANCELLED();
     }
 }

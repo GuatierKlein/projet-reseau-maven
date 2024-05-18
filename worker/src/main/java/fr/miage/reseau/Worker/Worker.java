@@ -2,9 +2,9 @@ package fr.miage.reseau.Worker;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class Worker implements Runnable {
     private final ProtocolInterpreter interpeter;
@@ -19,6 +19,7 @@ public class Worker implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("Connexion en cours...");
         try {                        
             Socket clientSocket = new Socket(serverAddress, port);
             final DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
@@ -30,14 +31,17 @@ public class Worker implements Runnable {
                 try {
                     String response;
                     while ((response = inFromServer.readLine()) != null) {
-                        System.out.println("Recu du serveur : " + response);
+                        // System.out.println("Recu du serveur : " + response);
                         try {
                             interpeter.execute(new Message(response));
                         } catch (Exception e) {
                             System.out.println(e.getMessage());
                         }   
                 }
-                } catch (IOException e) {
+                } catch (SocketException e) {
+                    System.out.println("Connexion perdue");
+                    System.exit(0);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             });
@@ -45,8 +49,11 @@ public class Worker implements Runnable {
             readerThread.start();
             readerThread.join();
             clientSocket.close();
+            System.out.println("Connexion fermée");
+        } catch (SocketException e) {
+            System.out.println("Connexion echoue");
+            System.exit(0);
         } catch (Exception e) {
-            System.out.println("Connection echoue");
             e.printStackTrace();
         }
     }
