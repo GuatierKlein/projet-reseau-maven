@@ -10,16 +10,12 @@ public class Worker {
     private String password;
     private ProtocolInterpreter interpeter;
 
-    public void launch(String[] args) {
+    public void launch(String serverAddress, int port) {
         askForPwd();
         interpeter = new ProtocolInterpreter(password);
         try {
-            String serverAddress = "localhost";
-            int serverPort = 1337;
-            
-
             while (true) {                
-                Socket clientSocket = new Socket(serverAddress, serverPort);
+                Socket clientSocket = new Socket(serverAddress, port);
                 final DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
                 final BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 interpeter.setOutToServer(outToServer);
