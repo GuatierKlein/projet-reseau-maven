@@ -9,6 +9,7 @@ public class MessageSender {
 
     public MessageSender(DataOutputStream outToServer, String password) {
         this.outToServer = outToServer;
+        this.password = password;
     }
 
     private void send(String message) {
