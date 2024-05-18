@@ -8,7 +8,7 @@ public class MessageLine {
     public MessageLine(String message) {
         String[] splitMessage = message.split(" ");
 
-        if(splitMessage.length < 1 || splitMessage.length > 2)
+        if(splitMessage.length < 1 || splitMessage.length > 3)
             throw new IllegalArgumentException("Message invalide");
 
         command = splitMessage[0];
