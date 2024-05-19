@@ -23,7 +23,7 @@
             "request": "launch",
             "mainClass": "fr.miage.reseau.Worker.App",
             "projectName": "worker",
-            "args": "localhost lalalu 1337"
+            "args": "localhost GAUTIER_EST_TRES_CHAUD 25555"
         }
     ]
 }
