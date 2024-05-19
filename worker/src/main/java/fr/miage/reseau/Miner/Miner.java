@@ -41,7 +41,7 @@ public class Miner implements Runnable{
     public void computeNonce() {
         isWorking = true;
         try {
-            while (!SHA256.hashHasAtLeastXStartingZeroes(concatDataAndNounceBytes(), _difficulty)) {
+            while (!SHA256.hashHasAtLeastXStartingZeroes(concatDataAndNounceString(), _difficulty)) {
                 _nonce.Next();
                 iterations++;
                 // log();
