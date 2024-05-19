@@ -71,7 +71,7 @@ public class ProtocolInterpreter {
     }
 
     private void WHO_ARE_YOU() {
-        System.out.println("Connecté");
+        System.out.println("Authentification demandée");
         outToServer.ITS_ME();
     }
 
@@ -82,6 +82,7 @@ public class ProtocolInterpreter {
 
     private void HELLO_YOU() {
         System.out.println("Mot de passe validé par le serveur");
+        System.out.println();
         outToServer.READY();
     }
 
