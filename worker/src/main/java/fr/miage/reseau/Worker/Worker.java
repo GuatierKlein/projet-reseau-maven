@@ -27,7 +27,7 @@ public class Worker implements Runnable {
             interpeter.setOutToServer(outToServer);
 
             //reader Thread
-              Thread readerThread = new Thread(() -> {
+            //   Thread readerThread = new Thread(() -> {
                 try {
                     String response;
                     while ((response = inFromServer.readLine()) != null) {
@@ -44,14 +44,14 @@ public class Worker implements Runnable {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            });
+            // });
 
-            readerThread.start();
-            readerThread.join();
+            // readerThread.start();
+            // readerThread.join();
             clientSocket.close();
             System.out.println("Connexion fermée");
         } catch (SocketException e) {
-            System.out.println("Connexion echoue");
+            System.out.println("Connexion echouée");
             System.exit(0);
         } catch (Exception e) {
             e.printStackTrace();
