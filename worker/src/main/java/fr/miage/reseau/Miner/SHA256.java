@@ -49,7 +49,7 @@ public class SHA256 {
             md.update(input);
             byte[] digest = md.digest();
             return digest;
-        } catch (NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException e) { //TODO remove try catch
             e.printStackTrace();
             return new byte[0];
         }
