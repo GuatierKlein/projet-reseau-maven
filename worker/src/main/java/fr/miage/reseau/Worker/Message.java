@@ -30,4 +30,13 @@ public class Message {
     public String getArg2() {
         return arg2;
     }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "command='" + command + '\'' +
+                ", arg1='" + arg1 + '\'' +
+                ", arg2='" + arg2 + '\'' +
+                '}';
+    }
 }
