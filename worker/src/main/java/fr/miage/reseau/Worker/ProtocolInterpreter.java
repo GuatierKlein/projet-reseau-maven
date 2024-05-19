@@ -104,7 +104,7 @@ public class ProtocolInterpreter {
     }
 
     private void YOU_DONT_FOOL_ME() {
-        System.out.println("Connection refusée");
+        System.out.println("Connection refusée (mauvais mot de passe)");
         System.exit(0);
     }
 
