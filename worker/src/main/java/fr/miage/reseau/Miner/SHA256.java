@@ -5,9 +5,14 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class SHA256 {
-    public static String getStringHash(String input) {
+    public static String getHash(String input) {
         return encodeHex(getDigest(input));
     }  
+
+        public static String getHash(byte[] input) {
+        return encodeHex(getDigest(input));
+    }  
+
 
     public static boolean hashHasAtLeastXStartingZeroes(String input, int x) {
         return countStartingZeroesInHash(getDigest(input)) >= x;
@@ -63,7 +68,6 @@ public class SHA256 {
     }
 
     private static int countStartingZeroesInByte(byte value) {
-        // var test = value & 0xff;
         if((value & 0xff) == 0x0) 
             return 2;
         if((value & 0xff) <= 0x0f) 

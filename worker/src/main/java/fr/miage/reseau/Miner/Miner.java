@@ -16,7 +16,7 @@ public class Miner implements Runnable{
         _nonce = new Nonce(step, startingNounce);
         iterations = 0;
     }
-
+    
     public void setData(String data) {
         _data = data;
         try {
@@ -41,7 +41,7 @@ public class Miner implements Runnable{
     public void computeNonce() {
         isWorking = true;
         try {
-            while (!SHA256.hashHasAtLeastXStartingZeroes(concatDataAndNounceString(), _difficulty)) {
+            while (!SHA256.hashHasAtLeastXStartingZeroes(concatDataAndNounceBytes(), _difficulty)) {
                 _nonce.Next();
                 iterations++;
                 // log();
@@ -65,11 +65,11 @@ public class Miner implements Runnable{
         System.out.print("Data + nonce :");
         System.out.println(concatDataAndNounceString());
         System.out.print("Valide :");
-        System.out.println(SHA256.hashHasAtLeastXStartingZeroes(concatDataAndNounceString(), _difficulty));
+        System.out.println(SHA256.hashHasAtLeastXStartingZeroes(concatDataAndNounceBytes(), _difficulty));
     }
 
     public String getHash() {
-        return SHA256.getStringHash(concatDataAndNounceString());
+        return SHA256.getHash(concatDataAndNounceBytes());
     }
 
     public long getIterations() {
