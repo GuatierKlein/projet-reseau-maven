@@ -54,18 +54,18 @@ public class ProtocolInterpreter {
 
     private void SOLVE(Message message) throws Exception {
         System.out.println("Minage demandé par le serveur");
-        //vérifier le parse
         difficulty = Integer.parseInt(message.getArg1());
         if(data == null || step == 0)
             throw new Exception("Paramètres manquants");
         miner = new Miner(data, difficulty, step, startingNonce);
         workerThread = new Thread(miner);
-        workerThread.start(); //comment on s'arrete quand on a trouvé?
+        workerThread.start(); 
         System.out.println("Minage debuté...");
         workerThread.join();
         System.out.println("FOUND! Solution trouvée");
         outToServer.FOUND(miner.getHash(), miner.getNonceHexString());
         System.out.println("Réponse envoyée");
+        data = null;
         outToServer.READY();
         System.out.println("En attente du serveur...");
     }
