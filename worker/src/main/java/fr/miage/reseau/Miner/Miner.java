@@ -3,14 +3,14 @@ package fr.miage.reseau.Miner;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
-public class Miner implements Runnable{
+public class Miner {
     private String _data;
     private byte[] _dataBytes;
     private int _difficulty;
     private Nonce _nonce;
     private long iterations;
     private boolean isWorking;
-    private boolean found;
+    private boolean stop;
 
     public Miner(String data, int difficulty, int step, long startingNounce) {
         setData(data);
@@ -36,18 +36,28 @@ public class Miner implements Runnable{
         return _nonce.toString();
     }
 
-    public boolean getFound() {
-        return found;
+    public void stop() {
+        stop = true;
     }
 
     public String getNonceHexString() {
         return _nonce.toHexString();
     }
 
+    public boolean didFind() {
+        try {
+            return SHA256.hashHasAtLeastXStartingZeroes(concatDataAndNounceBytes(), _difficulty);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public void computeNonce() {
         isWorking = true;
+        stop = false;
         try {
-            while (!SHA256.hashHasAtLeastXStartingZeroes(concatDataAndNounceBytes(), _difficulty)) {
+            while (!SHA256.hashHasAtLeastXStartingZeroes(concatDataAndNounceBytes(), _difficulty) && !stop) {
                 _nonce.Next();
                 iterations++;
                 // log();
@@ -99,11 +109,6 @@ public class Miner implements Runnable{
         sb.append(_data);
         sb.append(_nonce);
         return sb.toString();
-    }
-
-    @Override
-    public void run() {
-        computeNonce();
     }
 
     public boolean isWorking() {
