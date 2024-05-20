@@ -3,8 +3,6 @@ package fr.miage.reseau.Worker;
 import java.io.DataOutputStream;
 import java.security.NoSuchAlgorithmException;
 
-import fr.miage.reseau.Miner.Miner;
-
 public class ProtocolInterpreter {
     // private MessageLine message;
     private String password;
@@ -13,7 +11,7 @@ public class ProtocolInterpreter {
     private int step;
     private int startingNonce;
     private String data;
-    private Miner miner;
+    private Task tasker;
     private MessageSender outToServer;
 
     public ProtocolInterpreter(String password) {
@@ -109,8 +107,8 @@ public class ProtocolInterpreter {
             return;
         }
 
-        if(miner.isWorking()) {
-            outToServer.sendProgress(miner.getNonceHexString());
+        if(workerThread.isAlive()) {
+            outToServer.sendProgress(tasker.getCurrentNonce());
             return;
         }
 
@@ -118,7 +116,7 @@ public class ProtocolInterpreter {
     }
 
     private void CANCELLED() throws InterruptedException {
-        workerThread.interrupt();
+        tasker.terminate();
         System.out.println("Minage arreté par le serveur");
     }
 
@@ -130,20 +128,10 @@ public class ProtocolInterpreter {
     private void tryStartSolving() throws InterruptedException, NoSuchAlgorithmException {
         if(data == null || step == 0 || difficulty == 0)
             return;
-        miner = new Miner(data, difficulty, step, startingNonce);
-        workerThread = new Thread(miner);
+        if(workerThread != null && workerThread.isAlive())
+            return;
+        tasker = new Task(data, difficulty, startingNonce, step, outToServer);
+        workerThread = new Thread(tasker);
         workerThread.start(); 
-        System.out.println("Minage debuté...");
-        workerThread.join();
-
-        if(miner.getFound()) {
-            System.out.println("FOUND! Solution trouvée");
-            outToServer.FOUND(miner.getHash(), miner.getNonceHexString());
-            System.out.println("Réponse envoyée");
-        }
-
-        data = null;
-        outToServer.READY();
-        System.out.println("En attente du serveur...");
     }
 }
