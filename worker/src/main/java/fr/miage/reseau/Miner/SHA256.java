@@ -9,7 +9,7 @@ public class SHA256 {
         return encodeHex(getDigest(input));
     }  
 
-        public static String getHash(byte[] input) {
+        public static String getHash(byte[] input) throws NoSuchAlgorithmException {
         return encodeHex(getDigest(input));
     }  
 
@@ -18,7 +18,7 @@ public class SHA256 {
         return countStartingZeroesInHash(getDigest(input)) >= x;
     }
 
-    public static boolean hashHasAtLeastXStartingZeroes(byte[] input, int x) {
+    public static boolean hashHasAtLeastXStartingZeroes(byte[] input, int x) throws NoSuchAlgorithmException {
         return countStartingZeroesInHash(getDigest(input)) >= x;
     }
 
@@ -43,16 +43,11 @@ public class SHA256 {
         }
     }
 
-    private static byte[] getDigest(byte[] input) {
-        try {
+    private static byte[] getDigest(byte[] input) throws NoSuchAlgorithmException {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             md.update(input);
             byte[] digest = md.digest();
             return digest;
-        } catch (NoSuchAlgorithmException e) { //TODO remove try catch
-            e.printStackTrace();
-            return new byte[0];
-        }
     }
 
     private static int countStartingZeroesInHash(byte[] hash) {

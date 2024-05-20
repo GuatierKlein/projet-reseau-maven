@@ -1,6 +1,7 @@
 package fr.miage.reseau.Worker;
 
 import java.io.DataOutputStream;
+import java.security.NoSuchAlgorithmException;
 
 import fr.miage.reseau.Miner.Miner;
 
@@ -52,7 +53,7 @@ public class ProtocolInterpreter {
         }
     }
 
-    private void SOLVE(Message message) throws InterruptedException {
+    private void SOLVE(Message message) throws InterruptedException, NoSuchAlgorithmException {
         System.out.println("Difficulté reçue");
         difficulty = Integer.parseInt(message.getArg1());
         tryStartSolving();
@@ -78,7 +79,7 @@ public class ProtocolInterpreter {
         //nada
     }
 
-    private void NONCE(Message message) throws InterruptedException {
+    private void NONCE(Message message) throws InterruptedException, NoSuchAlgorithmException {
         try {
             startingNonce = Integer.parseInt(message.getArg1());
             step = Integer.parseInt(message.getArg2());
@@ -89,7 +90,7 @@ public class ProtocolInterpreter {
         tryStartSolving();
     }
 
-    private void PAYLOAD(Message message) throws InterruptedException {
+    private void PAYLOAD(Message message) throws InterruptedException, NoSuchAlgorithmException {
         data = message.getArg1();
         System.out.println("Payload reçue");
         tryStartSolving();
@@ -126,7 +127,7 @@ public class ProtocolInterpreter {
         CANCELLED();
     }
 
-    private void tryStartSolving() throws InterruptedException {
+    private void tryStartSolving() throws InterruptedException, NoSuchAlgorithmException {
         if(data == null || step == 0 || difficulty == 0)
             return;
         miner = new Miner(data, difficulty, step, startingNonce);

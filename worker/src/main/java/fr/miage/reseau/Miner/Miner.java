@@ -1,6 +1,7 @@
 package fr.miage.reseau.Miner;
 
 import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 
 public class Miner implements Runnable{
     private String _data;
@@ -58,7 +59,7 @@ public class Miner implements Runnable{
     }
 
     @SuppressWarnings("unused")
-    private void log() {
+    private void log() throws NoSuchAlgorithmException {
         System.out.print("Résultat : ");
         System.out.println(getHash());
         System.out.print("Nonce Hex : ");
@@ -73,7 +74,7 @@ public class Miner implements Runnable{
         System.out.println(SHA256.hashHasAtLeastXStartingZeroes(concatDataAndNounceBytes(), _difficulty));
     }
 
-    public String getHash() {
+    public String getHash() throws NoSuchAlgorithmException {
         return SHA256.getHash(concatDataAndNounceBytes());
     }
 

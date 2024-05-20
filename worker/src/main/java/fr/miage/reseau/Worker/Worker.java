@@ -26,28 +26,23 @@ public class Worker implements Runnable {
             final BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             interpeter.setOutToServer(outToServer);
 
-            //reader Thread
-            //   Thread readerThread = new Thread(() -> {
-                try {
-                    String response;
-                    while ((response = inFromServer.readLine()) != null) {
-                        // System.out.println("Recu du serveur : " + response);
-                        try {
-                            interpeter.execute(new Message(response));
-                        } catch (Exception e) {
-                            System.out.println(e.getMessage());
-                        }   
-                }
-                } catch (SocketException e) {
-                    System.out.println("Connexion perdue");
-                    System.exit(0);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            // });
+            try {
+                String response;
+                while ((response = inFromServer.readLine()) != null) {
+                    // System.out.println("Recu du serveur : " + response);
+                    try {
+                        interpeter.execute(new Message(response));
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }   
+            }
+            } catch (SocketException e) {
+                System.out.println("Connexion perdue");
+                System.exit(0);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-            // readerThread.start();
-            // readerThread.join();
             clientSocket.close();
             System.out.println("Connexion fermée");
         } catch (SocketException e) {
