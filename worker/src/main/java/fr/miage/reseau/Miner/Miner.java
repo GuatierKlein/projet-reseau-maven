@@ -9,6 +9,7 @@ public class Miner implements Runnable{
     private Nonce _nonce;
     private long iterations;
     private boolean isWorking;
+    private boolean found;
 
     public Miner(String data, int difficulty, int step, long startingNounce) {
         setData(data);
@@ -32,6 +33,10 @@ public class Miner implements Runnable{
 
     public String getNonce() {
         return _nonce.toString();
+    }
+
+    public boolean getFound() {
+        return found;
     }
 
     public String getNonceHexString() {

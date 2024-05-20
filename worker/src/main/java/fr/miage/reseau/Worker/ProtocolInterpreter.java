@@ -52,22 +52,10 @@ public class ProtocolInterpreter {
         }
     }
 
-    private void SOLVE(Message message) throws Exception {
-        System.out.println("Minage demandé par le serveur");
+    private void SOLVE(Message message) throws InterruptedException {
+        System.out.println("Difficulté reçue");
         difficulty = Integer.parseInt(message.getArg1());
-        if(data == null || step == 0)
-            throw new Exception("Paramètres manquants");
-        miner = new Miner(data, difficulty, step, startingNonce);
-        workerThread = new Thread(miner);
-        workerThread.start(); 
-        System.out.println("Minage debuté...");
-        workerThread.join();
-        System.out.println("FOUND! Solution trouvée");
-        outToServer.FOUND(miner.getHash(), miner.getNonceHexString());
-        System.out.println("Réponse envoyée");
-        data = null;
-        outToServer.READY();
-        System.out.println("En attente du serveur...");
+        tryStartSolving();
     }
 
     private void WHO_ARE_YOU() {
@@ -90,7 +78,7 @@ public class ProtocolInterpreter {
         //nada
     }
 
-    private void NONCE(Message message) {
+    private void NONCE(Message message) throws InterruptedException {
         try {
             startingNonce = Integer.parseInt(message.getArg1());
             step = Integer.parseInt(message.getArg2());
@@ -98,10 +86,13 @@ public class ProtocolInterpreter {
             e.printStackTrace();
         }
         System.out.println("Paramètres nonce reçus");
+        tryStartSolving();
     }
 
-    private void PAYLOAD(Message message) {
+    private void PAYLOAD(Message message) throws InterruptedException {
         data = message.getArg1();
+        System.out.println("Payload reçue");
+        tryStartSolving();
     }
 
     private void YOU_DONT_FOOL_ME() {
@@ -127,13 +118,31 @@ public class ProtocolInterpreter {
 
     private void CANCELLED() throws InterruptedException {
         workerThread.interrupt();
-        workerThread.join();
-        outToServer.READY();
         System.out.println("Minage arreté par le serveur");
     }
 
     private void SOLVED() throws InterruptedException {
         System.out.println("Solution trouvée par une autre machine");
         CANCELLED();
+    }
+
+    private void tryStartSolving() throws InterruptedException {
+        if(data == null || step == 0 || difficulty == 0)
+            return;
+        miner = new Miner(data, difficulty, step, startingNonce);
+        workerThread = new Thread(miner);
+        workerThread.start(); 
+        System.out.println("Minage debuté...");
+        workerThread.join();
+
+        if(miner.getFound()) {
+            System.out.println("FOUND! Solution trouvée");
+            outToServer.FOUND(miner.getHash(), miner.getNonceHexString());
+            System.out.println("Réponse envoyée");
+        }
+
+        data = null;
+        outToServer.READY();
+        System.out.println("En attente du serveur...");
     }
 }
