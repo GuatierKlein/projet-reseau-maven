@@ -1,11 +1,14 @@
 package fr.miage.reseau.Miner;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 
 public class Nonce {
     private long _value;
+    private BigInteger _altValue;
     private int _step;
+    private boolean _useAltValue = false;
 
     public Nonce(int step, long initValue) {
         _step = step;
@@ -13,12 +16,26 @@ public class Nonce {
     }
 
     public void Next() throws Exception {
-        if(_value > Long.MAX_VALUE - _step) throw new Exception("Nonce maximum atteint");
+        if(_useAltValue) {
+            _altValue.add(BigInteger.valueOf(_step));
+            return;
+        }
+
+        if(_value > Long.MAX_VALUE - _step && !_useAltValue) {
+            _altValue = BigInteger.valueOf(_value);
+            _altValue.add(BigInteger.valueOf(_step));
+            _useAltValue = true;
+            System.out.println("Nonce max atteint, passage au Biginteger");
+            return;
+        }
         _value += _step;
     }
 
     public String toHexString() {
-        return Long.toHexString(_value);
+        if(!_useAltValue)
+            return Long.toHexString(_value);
+
+        return _altValue.toString(16);
     }
 
     public String toString() {
@@ -31,9 +48,13 @@ public class Nonce {
     }
 
     public byte[] getBytes() {
-        ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
-        buffer.putLong(_value);
-        return trimByteArray(buffer.array());
+        if(!_useAltValue) {
+            ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
+            buffer.putLong(_value);
+            return trimByteArray(buffer.array());
+        }
+
+        return trimByteArray(_altValue.toByteArray());
     }
 
     private byte[] trimByteArray(byte[] array) {
