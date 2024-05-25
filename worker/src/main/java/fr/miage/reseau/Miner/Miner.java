@@ -3,6 +3,9 @@ package fr.miage.reseau.Miner;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * La classe Miner implémente un mécanisme de minage basé sur un algorithme de proof-of-work.
+ */
 public class Miner {
     private String _data;
     private byte[] _dataBytes;
@@ -12,13 +15,26 @@ public class Miner {
     private boolean _isWorking;
     private boolean _stop;
 
+    /**
+     * Constructeur de la classe Miner.
+     *
+     * @param data        les données à miner
+     * @param difficulty  la difficulté du minage
+     * @param step        l'incrément du nonce
+     * @param startingNounce le nonce initial
+     */
     public Miner(String data, int difficulty, int step, long startingNounce) {
         setData(data);
         setDifficulty(difficulty);
         _nonce = new Nonce(step, startingNounce);
         _iterations = 0;
     }
-    
+
+    /**
+     * Définit les données à miner.
+     *
+     * @param data les nouvelles données
+     */
     public void setData(String data) {
         _data = data;
         try {
@@ -28,22 +44,45 @@ public class Miner {
         }
     }
 
+    /**
+     * Définit la difficulté du minage.
+     *
+     * @param difficulty la nouvelle difficulté
+     */
     public void setDifficulty(int difficulty) {
         _difficulty = Math.max(difficulty, 1);
     }
 
+    /**
+     * Retourne le nonce sous forme de chaîne de caractères.
+     *
+     * @return le nonce en chaîne de caractères
+     */
     public String getNonce() {
         return _nonce.toString();
     }
 
+    /**
+     * Arrête le processus de minage.
+     */
     public void stop() {
         _stop = true;
     }
 
+    /**
+     * Retourne le nonce sous forme de chaîne hexadécimale.
+     *
+     * @return le nonce en chaîne hexadécimale
+     */
     public String getNonceHexString() {
         return _nonce.toHexString();
     }
 
+    /**
+     * Vérifie si le nonce actuel satisfait la difficulté requise.
+     *
+     * @return true si le nonce satisfait la difficulté, false sinon
+     */
     public boolean didFind() {
         try {
             return SHA256.hashHasAtLeastXStartingZeroes(concatDataAndNounceBytes(), _difficulty);
@@ -53,6 +92,9 @@ public class Miner {
         }
     }
 
+    /**
+     * Lance le processus de calcul du nonce.
+     */
     public void computeNonce() {
         _isWorking = true;
         _stop = false;
@@ -68,6 +110,11 @@ public class Miner {
         _isWorking = false;
     }
 
+    /**
+     * Méthode de log pour déboguer le processus de minage.
+     *
+     * @throws NoSuchAlgorithmException si l'algorithme de hachage est introuvable
+     */
     @SuppressWarnings("unused")
     private void log() throws NoSuchAlgorithmException {
         System.out.print("Résultat : ");
@@ -84,14 +131,30 @@ public class Miner {
         System.out.println(SHA256.hashHasAtLeastXStartingZeroes(concatDataAndNounceBytes(), _difficulty));
     }
 
+    /**
+     * Retourne le hachage des données concaténées avec le nonce.
+     *
+     * @return le hachage en chaîne de caractères
+     * @throws NoSuchAlgorithmException si l'algorithme de hachage est introuvable
+     */
     public String getHash() throws NoSuchAlgorithmException {
         return SHA256.getHash(concatDataAndNounceBytes());
     }
 
+    /**
+     * Retourne le nombre d'itérations effectuées lors du minage.
+     *
+     * @return le nombre d'itérations
+     */
     public long getIterations() {
         return _iterations;
     }
 
+    /**
+     * Concatène les données et le nonce en un seul tableau de bytes.
+     *
+     * @return le tableau de bytes résultant
+     */
     private byte[] concatDataAndNounceBytes() {
         byte[] nonce = _nonce.getBytes();
         int newLength = _dataBytes.length + nonce.length;
@@ -104,6 +167,11 @@ public class Miner {
         return res;
     }
 
+    /**
+     * Concatène les données et le nonce en une seule chaîne de caractères.
+     *
+     * @return la chaîne de caractères résultante
+     */
     private String concatDataAndNounceString() {
         StringBuilder sb = new StringBuilder();
         sb.append(_data);
@@ -111,6 +179,11 @@ public class Miner {
         return sb.toString();
     }
 
+    /**
+     * Vérifie si le processus de minage est en cours.
+     *
+     * @return true si le minage est en cours, false sinon
+     */
     public boolean isWorking() {
         return _isWorking;
     }
