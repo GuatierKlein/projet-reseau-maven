@@ -227,7 +227,7 @@ class ProtocolInterpreter {
     -tryStartSolving(): void
 }
 
-class Task {
+class Task implements Runnable {
     -Miner _miner
     -MessageSender _outToServer
     +Task(data: String, difficulty: int, startingNonce: int, step: int, outToServer: MessageSender)
@@ -236,7 +236,7 @@ class Task {
     +getCurrentNonce(): String
 }
 
-class Worker {
+class Worker implements Runnable {
     -ProtocolInterpreter interpeter
     -String serverAddress
     -int port
