@@ -4,26 +4,25 @@ import java.io.DataOutputStream;
 import java.security.NoSuchAlgorithmException;
 
 public class ProtocolInterpreter {
-    // private MessageLine message;
-    private String password;
-    private Thread workerThread;
-    private int difficulty;
-    private int step;
-    private int startingNonce;
-    private String data;
-    private Task tasker;
-    private MessageSender outToServer;
+    private String _password;
+    private Thread _workerThread;
+    private int _difficulty;
+    private int _step;
+    private int _startingNonce;
+    private String _data;
+    private Task _tasker;
+    private MessageSender _outToServer;
 
     public ProtocolInterpreter(String password) {
-        this.password = password;
+        this._password = password;
     }
 
     public void setOutToServer(DataOutputStream outToServer) {
-        this.outToServer = new MessageSender(outToServer, password);
+        this._outToServer = new MessageSender(outToServer, _password);
     }
 
     public void execute(Message message) throws Exception {
-        switch (message.getCommand()) {
+        switch (message.get_command()) {
             case "WHO_ARE_YOU_?": WHO_ARE_YOU();
             break;
             case "GIMME_PASSWORD": GIMME_PASSWORD();
@@ -47,30 +46,30 @@ public class ProtocolInterpreter {
             case "SOLVED": SOLVED();
             break;
         
-            default: throw new Exception("Commande inconnue : " + message.getCommand());
+            default: throw new Exception("Commande inconnue : " + message.get_command());
         }
     }
 
     private void SOLVE(Message message) throws InterruptedException, NoSuchAlgorithmException {
         System.out.println("Difficulté reçue");
-        difficulty = Integer.parseInt(message.getArg1());
+        _difficulty = Integer.parseInt(message.get_arg1());
         tryStartSolving();
     }
 
     private void WHO_ARE_YOU() {
         System.out.println("Authentification demandée");
-        outToServer.ITS_ME();
+        _outToServer.ITS_ME();
     }
 
     private void GIMME_PASSWORD() {
         System.out.println("Mot de passe demandé");
-        outToServer.PASSWD();
+        _outToServer.PASSWD();
     }
 
     private void HELLO_YOU() {
         System.out.println("Mot de passe validé par le serveur");
         System.out.println();
-        outToServer.READY();
+        _outToServer.READY();
     }
 
     private void OK() {
@@ -79,8 +78,8 @@ public class ProtocolInterpreter {
 
     private void NONCE(Message message) throws InterruptedException, NoSuchAlgorithmException {
         try {
-            startingNonce = Integer.parseInt(message.getArg1());
-            step = Integer.parseInt(message.getArg2());
+            _startingNonce = Integer.parseInt(message.get_arg1());
+            _step = Integer.parseInt(message.get_arg2());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -89,7 +88,7 @@ public class ProtocolInterpreter {
     }
 
     private void PAYLOAD(Message message) throws InterruptedException, NoSuchAlgorithmException {
-        data = message.getArg1();
+        _data = message.get_arg1();
         System.out.println("Payload reçue");
         tryStartSolving();
     }
@@ -101,22 +100,22 @@ public class ProtocolInterpreter {
 
     private void PROGRESS() {
         System.out.println("Progrès demandé");
-        if(data == null || step == 0)
+        if(_data == null || _step == 0)
         {
-            outToServer.STATUS_IDLE();
+            _outToServer.STATUS_IDLE();
             return;
         }
 
-        if(workerThread.isAlive()) {
-            outToServer.sendProgress(tasker.getCurrentNonce());
+        if(_workerThread.isAlive()) {
+            _outToServer.sendProgress(_tasker.getCurrentNonce());
             return;
         }
 
-        outToServer.STATUS_READY();
+        _outToServer.STATUS_READY();
     }
 
     private void CANCELLED() throws InterruptedException {
-        tasker.terminate();
+        _tasker.terminate();
         System.out.println("Minage arreté par le serveur");
     }
 
@@ -126,12 +125,12 @@ public class ProtocolInterpreter {
     }
 
     private void tryStartSolving() throws InterruptedException, NoSuchAlgorithmException {
-        if(data == null || step == 0 || difficulty == 0)
+        if(_data == null || _step == 0 || _difficulty == 0)
             return;
-        if(workerThread != null && workerThread.isAlive())
+        if(_workerThread != null && _workerThread.isAlive())
             return;
-        tasker = new Task(data, difficulty, startingNonce, step, outToServer);
-        workerThread = new Thread(tasker);
-        workerThread.start(); 
+        _tasker = new Task(_data, _difficulty, _startingNonce, _step, _outToServer);
+        _workerThread = new Thread(_tasker);
+        _workerThread.start(); 
     }
 }

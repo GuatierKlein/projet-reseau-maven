@@ -46,7 +46,7 @@ public class Worker implements Runnable {
             clientSocket.close();
             System.out.println("Connexion fermée");
         } catch (SocketException e) {
-            System.out.println("Connexion echouée");
+            System.out.println("Connexion échouée");
             System.exit(0);
         } catch (Exception e) {
             e.printStackTrace();

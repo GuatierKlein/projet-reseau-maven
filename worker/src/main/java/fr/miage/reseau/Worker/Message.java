@@ -1,9 +1,9 @@
 package fr.miage.reseau.Worker;
 
 public class Message {
-    private String command;
-    private String arg1;
-    private String arg2;
+    private String _command;
+    private String _arg1;
+    private String _arg2;
 
     public Message(String message) {
         String[] splitMessage = message.split(" ");
@@ -11,32 +11,32 @@ public class Message {
         if(splitMessage.length < 1 || splitMessage.length > 3)
             throw new IllegalArgumentException("Message invalide");
 
-        command = splitMessage[0];
+        _command = splitMessage[0];
         if(splitMessage.length >= 2)
-            arg1 = splitMessage[1];
+            _arg1 = splitMessage[1];
 
         if(splitMessage.length == 3)
-            arg2 = splitMessage[2];
+            _arg2 = splitMessage[2];
     }
 
-    public String getCommand() {
-        return command;
+    public String get_command() {
+        return _command;
     }
 
-    public String getArg1() {
-        return arg1;
+    public String get_arg1() {
+        return _arg1;
     }
 
-    public String getArg2() {
-        return arg2;
+    public String get_arg2() {
+        return _arg2;
     }
 
     @Override
     public String toString() {
         return "Message{" +
-                "command='" + command + '\'' +
-                ", arg1='" + arg1 + '\'' +
-                ", arg2='" + arg2 + '\'' +
+                "command='" + _command + '\'' +
+                ", arg1='" + _arg1 + '\'' +
+                ", arg2='" + _arg2 + '\'' +
                 '}';
     }
 }

@@ -8,15 +8,15 @@ public class Miner {
     private byte[] _dataBytes;
     private int _difficulty;
     private Nonce _nonce;
-    private long iterations;
-    private boolean isWorking;
-    private boolean stop;
+    private long _iterations;
+    private boolean _isWorking;
+    private boolean _stop;
 
     public Miner(String data, int difficulty, int step, long startingNounce) {
         setData(data);
         setDifficulty(difficulty);
         _nonce = new Nonce(step, startingNounce);
-        iterations = 0;
+        _iterations = 0;
     }
     
     public void setData(String data) {
@@ -37,7 +37,7 @@ public class Miner {
     }
 
     public void stop() {
-        stop = true;
+        _stop = true;
     }
 
     public String getNonceHexString() {
@@ -54,18 +54,18 @@ public class Miner {
     }
 
     public void computeNonce() {
-        isWorking = true;
-        stop = false;
+        _isWorking = true;
+        _stop = false;
         try {
-            while (!SHA256.hashHasAtLeastXStartingZeroes(concatDataAndNounceBytes(), _difficulty) && !stop) {
+            while (!SHA256.hashHasAtLeastXStartingZeroes(concatDataAndNounceBytes(), _difficulty) && !_stop) {
                 _nonce.Next();
-                iterations++;
+                _iterations++;
                 // log();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        isWorking = false;
+        _isWorking = false;
     }
 
     @SuppressWarnings("unused")
@@ -89,7 +89,7 @@ public class Miner {
     }
 
     public long getIterations() {
-        return iterations;
+        return _iterations;
     }
 
     private byte[] concatDataAndNounceBytes() {
@@ -112,6 +112,6 @@ public class Miner {
     }
 
     public boolean isWorking() {
-        return isWorking;
+        return _isWorking;
     }
 }
