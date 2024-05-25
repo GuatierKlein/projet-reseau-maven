@@ -1,105 +1,255 @@
-@startUML
+@startuml
 
 class Miner {
-    private String _data
-    private byte[] _dataBytes
-    private int _difficulty
-    private Nonce _nonce
-    private long iterations
-    private boolean isWorking
-    private boolean stop
-
-    setData(String)
-    setDifficulty(int)
-    long getNonce()
-    boolean didFind()
-    computeNonce()
-    String getHash()
-    long getIterations()
-    boolean isWorking()
+    -String _data
+    -byte[] _dataBytes
+    -int _difficulty
+    -Nonce _nonce
+    -long _iterations
+    -boolean _isWorking
+    -boolean _stop
+    +Miner(data: String, difficulty: int, step: int, startingNounce: long)
+    +setData(data: String): void
+    +setDifficulty(difficulty: int): void
+    +getNonce(): String
+    +stop(): void
+    +getNonceHexString(): String
+    +didFind(): boolean
+    +computeNonce(): void
+    +log(): void
+    +getHash(): String
+    +getIterations(): long
+    -concatDataAndNounceBytes(): byte[]
+    -concatDataAndNounceString(): String
+    +isWorking(): boolean
 }
 
 class Nonce {
-    private long _value
-    private BigInteger _altValue
-    private int _step
-    private boolean _useAltValue
-
-    Next()
-    String toHexString()
-    String toString()
-    byte[] getBytes()
+    -long _value
+    -BigInteger _altValue
+    -int _step
+    -boolean _useAltValue = false
+    +Nonce(step: int, initValue: long)
+    +Next(): void
+    +toHexString(): String
+    +toString(): String
+    +getBytes(): byte[]
+    -trimByteArray(array: byte[]): byte[]
 }
 
 class SHA256 {
-    static String getHash(String)
-    static String getHash(byte[])
-    static boolean hashHasAtLeastXStartingZeroes(String, int)
-    static boolean hashHasAtLeastXStartingZeroes(byte[], int)
+    +getHash(input: String): String
+    +getHash(input: byte[]): String
+    +hashHasAtLeastXStartingZeroes(input: String, x: int): boolean
+    +hashHasAtLeastXStartingZeroes(input: byte[], x: int): boolean
+    -encodeHex(digest: byte[]): String
+    -getDigest(input: String): byte[]
+    -getDigest(input: byte[]): byte[]
+    -countStartingZeroesInHash(hash: byte[]): int
+    -countStartingZeroesInByte(value: byte): int
 }
 
-Miner "1" -- "1" Nonce
-
-class App {}
-
 class Message {
-    private String _command
-    private String _arg1
-    private String _arg2
+    -String _command
+    -String _arg1
+    -String _arg2
+    +Message(message: String)
+    +get_command(): String
+    +get_arg1(): String
+    +get_arg2(): String
+    +toString(): String
+}
 
-    String getCommand()
-    String getArg1()
-    String getArg2()
+class App {
+    +main(args: String[]): void
 }
 
 class MessageSender {
-    private DataOutputStream outToServer
-    private String password
-
-    FOUND(String, String)
-    STATUS_READY()
-    STATUS_IDLE()
-    READY()
-    sendProgress(String)
-    PASSWD()
+    -DataOutputStream outToServer
+    -String password
+    +MessageSender(outToServer: DataOutputStream, password: String)
+    -send(message: String): void
+    +ITS_ME(): void
+    +PASSWD(): void
+    +sendProgress(nonce: String): void
+    +READY(): void
+    +STATUS_IDLE(): void
+    +STATUS_READY(): void
+    +FOUND(hash: String, nonce: String): void
 }
 
 class ProtocolInterpreter {
-    private String _password
-    private Thread _workerThread
-    private int _difficulty
-    private int _step
-    private int _startingNonce
-    private String _data
-    private Task _tasker
-    private MessageSender _outToServer
-
-    setOutToServer(DataOutputStream)
-    execute(Message)
+    -String _password
+    -Thread _workerThread
+    -int _difficulty
+    -int _step
+    -int _startingNonce
+    -String _data
+    -Task _tasker
+    -MessageSender _outToServer
+    +ProtocolInterpreter(password: String)
+    +setOutToServer(outToServer: DataOutputStream): void
+    +execute(message: Message): void
+    -SOLVE(message: Message): void
+    -WHO_ARE_YOU(): void
+    -GIMME_PASSWORD(): void
+    -HELLO_YOU(): void
+    -OK(): void
+    -NONCE(message: Message): void
+    -PAYLOAD(message: Message): void
+    -YOU_DONT_FOOL_ME(): void
+    -PROGRESS(): void
+    -CANCELLED(): void
+    -SOLVED(): void
+    -tryStartSolving(): void
 }
 
-class Task implements Runnable {
-    private Miner _miner;
-    private MessageSender _outToServer;
-
-    terminate()
-    run()
-    getCurrentNonce()
+class Task {
+    -Miner _miner
+    -MessageSender _outToServer
+    +Task(data: String, difficulty: int, startingNonce: int, step: int, outToServer: MessageSender)
+    +terminate(): void
+    +run(): void
+    +getCurrentNonce(): String
 }
 
-class Worker implements Runnable {
-    private ProtocolInterpreter interpeter
-    private String serverAddress
-    private int port
+class Worker {
+    -ProtocolInterpreter interpeter
+    -String serverAddress
+    -int port
+    +Worker(serverAddress: String, password: String, port: int)
+    +run(): void
+}
 
-    run()
+@startuml
+
+class Miner {
+    -String _data
+    -byte[] _dataBytes
+    -int _difficulty
+    -Nonce _nonce
+    -long _iterations
+    -boolean _isWorking
+    -boolean _stop
+    +Miner(data: String, difficulty: int, step: int, startingNounce: long)
+    +setData(data: String): void
+    +setDifficulty(difficulty: int): void
+    +getNonce(): String
+    +stop(): void
+    +getNonceHexString(): String
+    +didFind(): boolean
+    +computeNonce(): void
+    +log(): void
+    +getHash(): String
+    +getIterations(): long
+    -concatDataAndNounceBytes(): byte[]
+    -concatDataAndNounceString(): String
+    +isWorking(): boolean
+}
+
+class Nonce {
+    -long _value
+    -BigInteger _altValue
+    -int _step
+    -boolean _useAltValue = false
+    +Nonce(step: int, initValue: long)
+    +Next(): void
+    +toHexString(): String
+    +toString(): String
+    +getBytes(): byte[]
+    -trimByteArray(array: byte[]): byte[]
+}
+
+class SHA256 {
+    +getHash(input: String): String
+    +getHash(input: byte[]): String
+    +hashHasAtLeastXStartingZeroes(input: String, x: int): boolean
+    +hashHasAtLeastXStartingZeroes(input: byte[], x: int): boolean
+    -encodeHex(digest: byte[]): String
+    -getDigest(input: String): byte[]
+    -getDigest(input: byte[]): byte[]
+    -countStartingZeroesInHash(hash: byte[]): int
+    -countStartingZeroesInByte(value: byte): int
+}
+
+class Message {
+    -String _command
+    -String _arg1
+    -String _arg2
+    +Message(message: String)
+    +get_command(): String
+    +get_arg1(): String
+    +get_arg2(): String
+    +toString(): String
+}
+
+class App {
+    +main(args: String[]): void
+}
+
+class MessageSender {
+    -DataOutputStream outToServer
+    -String password
+    +MessageSender(outToServer: DataOutputStream, password: String)
+    -send(message: String): void
+    +ITS_ME(): void
+    +PASSWD(): void
+    +sendProgress(nonce: String): void
+    +READY(): void
+    +STATUS_IDLE(): void
+    +STATUS_READY(): void
+    +FOUND(hash: String, nonce: String): void
+}
+
+class ProtocolInterpreter {
+    -String _password
+    -Thread _workerThread
+    -int _difficulty
+    -int _step
+    -int _startingNonce
+    -String _data
+    -Task _tasker
+    -MessageSender _outToServer
+    +ProtocolInterpreter(password: String)
+    +setOutToServer(outToServer: DataOutputStream): void
+    +execute(message: Message): void
+    -SOLVE(message: Message): void
+    -WHO_ARE_YOU(): void
+    -GIMME_PASSWORD(): void
+    -HELLO_YOU(): void
+    -OK(): void
+    -NONCE(message: Message): void
+    -PAYLOAD(message: Message): void
+    -YOU_DONT_FOOL_ME(): void
+    -PROGRESS(): void
+    -CANCELLED(): void
+    -SOLVED(): void
+    -tryStartSolving(): void
+}
+
+class Task {
+    -Miner _miner
+    -MessageSender _outToServer
+    +Task(data: String, difficulty: int, startingNonce: int, step: int, outToServer: MessageSender)
+    +terminate(): void
+    +run(): void
+    +getCurrentNonce(): String
+}
+
+class Worker {
+    -ProtocolInterpreter interpeter
+    -String serverAddress
+    -int port
+    +Worker(serverAddress: String, password: String, port: int)
+    +run(): void
 }
 
 Task "1" -- "1" Miner
+Miner "1" -- "1" Nonce
 App "1" -- "1" Worker
 Worker "1" -- "1" ProtocolInterpreter
 ProtocolInterpreter "1" -- "1" MessageSender
 Task "0..1" -- "1" ProtocolInterpreter
 Worker "1" -- "*" Message
- 
-@endUML
+
+@enduml
