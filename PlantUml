@@ -1,0 +1,105 @@
+@startUML
+
+class Miner {
+    private String _data
+    private byte[] _dataBytes
+    private int _difficulty
+    private Nonce _nonce
+    private long iterations
+    private boolean isWorking
+    private boolean stop
+
+    setData(String)
+    setDifficulty(int)
+    long getNonce()
+    boolean didFind()
+    computeNonce()
+    String getHash()
+    long getIterations()
+    boolean isWorking()
+}
+
+class Nonce {
+    private long _value
+    private BigInteger _altValue
+    private int _step
+    private boolean _useAltValue
+
+    Next()
+    String toHexString()
+    String toString()
+    byte[] getBytes()
+}
+
+class SHA256 {
+    static String getHash(String)
+    static String getHash(byte[])
+    static boolean hashHasAtLeastXStartingZeroes(String, int)
+    static boolean hashHasAtLeastXStartingZeroes(byte[], int)
+}
+
+Miner "1" -- "1" Nonce
+
+class App {}
+
+class Message {
+    private String _command
+    private String _arg1
+    private String _arg2
+
+    String getCommand()
+    String getArg1()
+    String getArg2()
+}
+
+class MessageSender {
+    private DataOutputStream outToServer
+    private String password
+
+    FOUND(String, String)
+    STATUS_READY()
+    STATUS_IDLE()
+    READY()
+    sendProgress(String)
+    PASSWD()
+}
+
+class ProtocolInterpreter {
+    private String _password
+    private Thread _workerThread
+    private int _difficulty
+    private int _step
+    private int _startingNonce
+    private String _data
+    private Task _tasker
+    private MessageSender _outToServer
+
+    setOutToServer(DataOutputStream)
+    execute(Message)
+}
+
+class Task implements Runnable {
+    private Miner _miner;
+    private MessageSender _outToServer;
+
+    terminate()
+    run()
+    getCurrentNonce()
+}
+
+class Worker implements Runnable {
+    private ProtocolInterpreter interpeter
+    private String serverAddress
+    private int port
+
+    run()
+}
+
+Task "1" -- "1" Miner
+App "1" -- "1" Worker
+Worker "1" -- "1" ProtocolInterpreter
+ProtocolInterpreter "1" -- "1" MessageSender
+Task "0..1" -- "1" ProtocolInterpreter
+Worker "1" -- "*" Message
+ 
+@endUML
